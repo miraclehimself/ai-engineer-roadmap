@@ -1,3 +1,4 @@
+from src.models.patient import Patient
 def validate_patient(patient_id):
     if not patient_id:
         return {
@@ -24,9 +25,9 @@ def validate_patient(patient_id):
 
     return {
         "valid": True,
-        "patient": {
-            "id": patient_id,
-            "name": f"Patient {patient_id}",
-            "status": status
-        }
+        "patient": Patient(
+            id= patient_id,
+            name= f"Patient {patient_id}",
+            status= status
+        )
     }
