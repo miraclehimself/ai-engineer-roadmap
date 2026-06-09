@@ -7,6 +7,7 @@ app =FastAPI(
 
 @app.get("/health")
 def health_check():
+    print ("Health endpoint called")
     return {
         "status": "healthy",
         "service": "ai-engineer-roadmap-api"
