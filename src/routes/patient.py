@@ -1,7 +1,19 @@
 from fastapi import APIRouter, HTTPException
-from src.services.patient_service import validate_patient
+from src.services.patient_service import validate_patient, search_patients_by_status
 
 router = APIRouter()
+
+
+@router.get("/patients/search")
+def search_patients(status: str | None = None):
+
+        results = search_patients_by_status(status)
+
+        return {
+            "count": len(results),
+            "results": results
+            
+        }
 
 @router.get("/patient/{patient_id}")
 def get_patient(patient_id: str):
