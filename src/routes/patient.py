@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException
-from src.services.patient_service import validate_patient, search_patients_by_status
+from src.services.patient_service import validate_patient, search_patients_by_status, delete_patient
 from src.models.patient import Patient
+from src.services.patient_service import delete_patient
 
 router = APIRouter()
 
@@ -42,5 +43,18 @@ def create_patient(patient: Patient):
      return {
           "message": "Patient created successfully",
           "patient": patient
-          
+
      }
+
+@router.delete("/patient/{patient_id}")
+def remove_patient(patient_id: str):
+     
+     result = delete_patient(patient_id)
+
+     if result["valid"] is False:
+          raise HTTPException(
+               status_code=404,
+               detail=result["message"]
+          )
+     return result 
+    

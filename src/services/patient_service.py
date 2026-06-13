@@ -65,3 +65,33 @@ def search_patients_by_status(status):
                 "status": patient["status"]
             })
     return results
+
+def delete_patient(patient_id):
+
+    patients = {
+        "77777": {
+            "name": "John Smith",
+            "status": "Active"
+
+        },
+        "88888": {
+            "name": "Sarah Johns",
+            "status": "Discharged"
+
+        }
+    }
+
+    if patient_id not in patients:
+        return {
+            "valid": False,
+            "message": "Patient not found"
+
+        }
+    
+    deleted = patients.pop(patient_id)
+
+    return {
+        "valid": True,
+        "message": "Patient deleted",
+        "patient": deleted
+    }
