@@ -1,16 +1,8 @@
 from src.models.patient import Patient
+from src.data.patient_db import patients
+
 def validate_patient(patient_id):
 
-    patients = {
-        "77777": {
-            "name": "John Smith",
-            "status": "Active"
-        },
-        "88888": {
-            "name": "Sarah Johns",
-            "status": "Discharged"
-        }
-    }
 
     if not patient_id:
         return {
@@ -44,17 +36,6 @@ def validate_patient(patient_id):
 
 def search_patients_by_status(status):
 
-    patients = {
-        "77777": {
-            "name": "John Smith",
-            "status": "Active"
-        },
-        "88888": {
-            "name": "Sarah Johns",
-            "status": "Discharged"
-        }
-    }
-
     results = []
     for patient_id, patient in patients.items():
         if status is None or patient["status"] == status:
@@ -67,19 +48,6 @@ def search_patients_by_status(status):
     return results
 
 def delete_patient(patient_id):
-
-    patients = {
-        "77777": {
-            "name": "John Smith",
-            "status": "Active"
-
-        },
-        "88888": {
-            "name": "Sarah Johns",
-            "status": "Discharged"
-
-        }
-    }
 
     if patient_id not in patients:
         return {
