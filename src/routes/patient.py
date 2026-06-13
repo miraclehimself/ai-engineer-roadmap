@@ -1,5 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from src.services.patient_service import validate_patient, search_patients_by_status
+from src.models.patient import Patient
 
 router = APIRouter()
 
@@ -34,3 +35,12 @@ def get_patient(patient_id: str):
         )
     
     return result
+
+@router.post("/patient")
+def create_patient(patient: Patient):
+     
+     return {
+          "message": "Patient created successfully",
+          "patient": patient
+          
+     }
