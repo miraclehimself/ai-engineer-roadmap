@@ -63,3 +63,19 @@ def delete_patient(patient_id):
         "message": "Patient deleted",
         "patient": deleted
     }
+
+def update_patient(patient_id, updated_data):
+
+    if patient_id not in patients:
+        return {
+            "valid": False,
+            "message": "Patient not found"
+
+        }
+    patients[patient_id].update(updated_data)
+
+    return {
+        "valid": True,
+        "message": "Patient updated",
+        "patient": patients[patient_id]
+    }
