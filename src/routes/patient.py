@@ -1,7 +1,12 @@
 from fastapi import APIRouter, HTTPException
-from src.services.patient_service import validate_patient, search_patients_by_status, delete_patient
+from src.services.patient_service import (
+     validate_patient,
+     search_patients_by_status,
+     delete_patient,
+     update_patient
+)
+
 from src.models.patient import Patient
-from src.services.patient_service import delete_patient
 
 router = APIRouter()
 
