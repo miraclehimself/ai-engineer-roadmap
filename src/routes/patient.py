@@ -62,4 +62,18 @@ def remove_patient(patient_id: str):
                detail=result["message"]
           )
      return result 
-    
+     
+@router.put("/patient/{patient_id}")
+def edit_patient(patient_id: str, patient: Patient):
+     
+        result = update_patient(
+             patient_id,
+             patient.model_dump()
+        )
+        
+        if result["valid"] is False:
+             raise HTTPException(
+                  status_code=404,
+                  detail=result["message"]
+             )
+        return result
