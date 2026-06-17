@@ -3,7 +3,8 @@ from src.services.patient_service import (
      validate_patient,
      search_patients_by_status,
      delete_patient,
-     update_patient
+     update_patient,
+     create_patient_record
 )
 
 from src.models.patient import Patient

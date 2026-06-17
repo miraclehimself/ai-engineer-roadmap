@@ -79,3 +79,19 @@ def update_patient(patient_id, updated_data):
         "message": "Patient updated",
         "patient": patients[patient_id]
     }
+def create_patient_record(patient):
+
+    patients[patient.id] = {
+        "name": patient.name,
+        "status": patient.status
+    }
+
+    return {
+        "valid": True,
+        "message": "Patient created successfully",
+        "patient": {
+            "id": patient.id,
+            "name": patient.name,
+            "status": patient.status
+        }
+    }
