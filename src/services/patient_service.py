@@ -1,5 +1,6 @@
 from src.models.patient import Patient
 from src.data.patient_db import patients
+from  datetime import datetime
 
 def validate_patient(patient_id):
 
@@ -83,7 +84,8 @@ def create_patient_record(patient):
 
     patients[patient.id] = {
         "name": patient.name,
-        "status": patient.status
+        "status": patient.status,
+        "created_at": datetime.now().isoformat()
     }
 
     return {
