@@ -45,12 +45,10 @@ def get_patient(patient_id: str):
 
 @router.post("/patient")
 def create_patient(patient: Patient):
-     
-     return {
-          "message": "Patient created successfully",
-          "patient": patient
 
-     }
+    result = create_patient_record(patient)
+
+    return result
 
 @router.delete("/patient/{patient_id}")
 def remove_patient(patient_id: str):

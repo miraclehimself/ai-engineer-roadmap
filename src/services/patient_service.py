@@ -81,6 +81,12 @@ def update_patient(patient_id, updated_data):
         "patient": patients[patient_id]
     }
 def create_patient_record(patient):
+    if patient.id in patients:
+        return {
+            "valid": False,
+            "message": "Patient already exists"
+
+    }
 
     patients[patient.id] = {
         "name": patient.name,
