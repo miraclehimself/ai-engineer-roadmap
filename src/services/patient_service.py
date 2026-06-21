@@ -28,12 +28,15 @@ def validate_patient(patient_id):
     
     return {
         "valid": True,
-        "patient": Patient(
-            id=patient_id,
-            name=patient["name"],
-            status=patient["status"]
-        )
+        "patient":{
+            "id": patient_id,
+            "name": patient["name"],
+            "status": patient["status"],
+            "created_at": patient.get("created_at"),
+            "updated_at": patient.get("updated_at")
+        }
     }
+    
 
 def search_patients_by_status(status):
 
@@ -74,6 +77,7 @@ def update_patient(patient_id, updated_data):
 
         }
     patients[patient_id].update(updated_data)
+    patients[patient_id]["updated_at"] = datetime.now().isoformat()
 
     return {
         "valid": True,
