@@ -1,6 +1,7 @@
 from src.models.patient import Patient
 from src.data.patient_db import patients
 from  datetime import datetime
+from src.services.audit_service import log_action
 
 def validate_patient(patient_id):
 
@@ -62,6 +63,8 @@ def delete_patient(patient_id):
     
     deleted = patients.pop(patient_id)
 
+    log_action("DELETE", patient_id)
+
     return {
         "valid": True,
         "message": "Patient deleted",
@@ -79,11 +82,17 @@ def update_patient(patient_id, updated_data):
     patients[patient_id].update(updated_data)
     patients[patient_id]["updated_at"] = datetime.now().isoformat()
 
+    log_action("UPDATE", patient_id)
+
     return {
         "valid": True,
         "message": "Patient updated",
         "patient": patients[patient_id]
+
     }
+
+    
+
 def create_patient_record(patient):
     if patient.id in patients:
         return {
@@ -97,6 +106,8 @@ def create_patient_record(patient):
         "status": patient.status,
         "created_at": datetime.now().isoformat()
     }
+
+    log_action("CREATE", patient.id)
 
     return {
         "valid": True,

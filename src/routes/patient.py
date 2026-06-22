@@ -1,3 +1,4 @@
+from src.services.audit_service import audit_logs
 from fastapi import APIRouter, HTTPException
 from src.services.patient_service import (
      validate_patient,
@@ -76,3 +77,11 @@ def edit_patient(patient_id: str, patient: Patient):
                   detail=result["message"]
              )
         return result
+
+@router.get("/audit")
+def get_audit_logs():
+     
+     return {
+          "count": len(audit_logs),
+          "logs": audit_logs
+     }
