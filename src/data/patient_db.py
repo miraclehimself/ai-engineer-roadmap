@@ -1,12 +1,3 @@
-patients = {
-  "77777": {
-    "name": "John Smith",
-    "status": "Active"
-  },
+from src.data.storage import load_patients
+patients = load_patients()
 
-  "88888": {
-    "name": "Sarch Johns",
-    "status": "Discharged"
-
-  }
-}
