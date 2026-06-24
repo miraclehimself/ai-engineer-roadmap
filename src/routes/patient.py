@@ -79,7 +79,18 @@ def edit_patient(patient_id: str, patient: Patient):
         return result
 
 @router.get("/audit")
-def get_audit_logs():
+def get_audit_logs(patient_id: str | None = None):
+
+     if patient_id:
+          filtered_logs = [
+               log for log in  audit_logs
+               if log["patient_id"] == patient_id
+          ]
+
+          return {
+               "count": len(filtered_logs),
+               "logs": filtered_logs
+          }
      
      return {
           "count": len(audit_logs),
