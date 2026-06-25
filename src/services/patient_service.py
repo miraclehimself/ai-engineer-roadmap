@@ -119,6 +119,8 @@ def create_patient_record(patient):
         "patient": {
             "id": patient.id,
             "name": patient.name,
-            "status": patient.status
+            "status": patient.status, 
+            "created_at": patients[patient.id].get("created_at"),
+            "updated_at": patients[patient.id].get("updated_at")
         }
     }
