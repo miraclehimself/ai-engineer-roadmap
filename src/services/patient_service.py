@@ -103,11 +103,13 @@ def create_patient_record(patient):
             "message": "Patient already exists"
 
     }
-
+    now = datetime.now().isoformat()
     patients[patient.id] = {
         "name": patient.name,
         "status": patient.status,
-        "created_at": datetime.now().isoformat()
+        "created_at": now,
+        "updated_at": now
+
     }
     save_patients(patients)
 
