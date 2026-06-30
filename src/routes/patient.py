@@ -1,4 +1,5 @@
 from src.services.audit_service import audit_logs
+from src.models.response import StandardResponse
 from fastapi import APIRouter, HTTPException
 from src.services.patient_service import (
      validate_patient,
@@ -44,7 +45,7 @@ def get_patient(patient_id: str):
     
     return result
 
-@router.post("/patient")
+@router.post("/patient", response_model=StandardResponse)
 def create_patient(patient: Patient):
 
     result = create_patient_record(patient)
