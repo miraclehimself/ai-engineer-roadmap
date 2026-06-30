@@ -14,18 +14,22 @@ from src.models.patient import Patient
 router = APIRouter()
 
 
-@router.get("/patients/search")
+@router.get("/patients/search", response_model=StandardResponse)
 def search_patients(status: str | None = None):
 
         results = search_patients_by_status(status)
 
-        return {
-            "count": len(results),
-            "results": results
+        return StandardResponse(
+          valid=True,
+          message="Patients search completed",
+          data={
+               "count": len(results),
+               "result": results
+          }
             
-        }
+        )
 
-@router.get("/patient/{patient_id}")
+@router.get("/patient/{patient_id}", response_model=StandardResponse)
 def get_patient(patient_id: str):
 
     result = validate_patient(patient_id)
@@ -43,14 +47,22 @@ def get_patient(patient_id: str):
             detail=result["message"]
         )
     
-    return result
+    return StandardResponse(
+         valid=result["valid"],
+         message="patient found",
+         data=result["patient"]
+    )
 
 @router.post("/patient", response_model=StandardResponse)
 def create_patient(patient: Patient):
 
     result = create_patient_record(patient)
 
-    return result
+    return StandardResponse(
+         valid=result["valid"],
+         message=result["message"],
+         data=result["patient"]
+    )
 
 @router.delete("/patient/{patient_id}")
 def remove_patient(patient_id: str):
