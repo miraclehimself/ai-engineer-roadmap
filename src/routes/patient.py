@@ -64,7 +64,7 @@ def create_patient(patient: Patient):
          data=result["patient"]
     )
 
-@router.delete("/patient/{patient_id}")
+@router.delete("/patient/{patient_id}", response_model=StandardResponse)
 def remove_patient(patient_id: str):
      
      result = delete_patient(patient_id)
@@ -74,9 +74,13 @@ def remove_patient(patient_id: str):
                status_code=404,
                detail=result["message"]
           )
-     return result 
+     return StandardResponse(
+          valid=result["valid"],
+          message=result["message"],
+          data=result["patient"]
+     )
      
-@router.put("/patient/{patient_id}")
+@router.put("/patient/{patient_id}", response_model=StandardResponse)
 def edit_patient(patient_id: str, patient: Patient):
      
         result = update_patient(
@@ -89,8 +93,11 @@ def edit_patient(patient_id: str, patient: Patient):
                   status_code=404,
                   detail=result["message"]
              )
-        return result
-
+        return StandardResponse(
+             valid=result["valid"],
+             message=result["message"],
+             data=result["patient"]
+        )
 @router.get("/audit")
 def get_audit_logs(patient_id: str | None = None):
 

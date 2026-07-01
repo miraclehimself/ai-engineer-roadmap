@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from src.routes.patient import router as patient_router
+from src.routes.system import router as system_router
 
 app =FastAPI(
     title="AI Engineer Roadmap API" 
@@ -23,3 +24,4 @@ def get_info():
     
 
 app.include_router(patient_router)
+app.include_router(system_router)
