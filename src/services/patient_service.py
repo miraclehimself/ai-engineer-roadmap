@@ -3,6 +3,7 @@ from src.data.patient_db import patients
 from  datetime import datetime
 from src.services.audit_service import log_action
 from src.data.storage import save_patients
+from src.database.patient_respository import insert_patient
 
 def validate_patient(patient_id):
 
@@ -112,6 +113,13 @@ def create_patient_record(patient):
 
     }
     save_patients(patients)
+    insert_patient({
+        "id": patient.id,
+        "name": patient.name,
+        "status": patient.status,
+        "created_at": now,
+        "updated_at": now
+    })
 
     log_action("CREATE", patient.id)
 
