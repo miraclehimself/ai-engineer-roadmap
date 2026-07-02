@@ -1,10 +1,12 @@
 from fastapi import FastAPI
 from src.routes.patient import router as patient_router
 from src.routes.system import router as system_router
+from src.database.setup import create_tables
 
 app =FastAPI(
     title="AI Engineer Roadmap API" 
 )
+create_tables()
 
 @app.get("/health")
 def health_check():
