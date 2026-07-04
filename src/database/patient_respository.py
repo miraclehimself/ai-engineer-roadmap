@@ -20,3 +20,22 @@ def insert_patient(patient_data):
 
     connection.commit()
     connection.close()
+
+def get_patient(patient_id: str):
+    connection = get_connection()
+    cursor = connection.cursor()
+
+    cursor.execute(
+        """
+        SELECT id, name, status, created_at, updated_at
+        FROM patients
+        WHERE id = ?
+        """,
+        (patient_id,)
+    )
+    
+    patient = cursor.fetchone()
+
+    connection.close()
+
+    return patient

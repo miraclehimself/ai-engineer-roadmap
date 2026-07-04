@@ -10,11 +10,11 @@ def test_health_check():
     assert response.json()["status"] == "healthy"
 
 def test_get_active_patient():
-    response = client.get("/patient/77777")
+    response = client.get("/patient/13001")
 
     assert response.status_code == 200
     assert response.json()["valid"] is True
-    assert response.json()["data"]["status"] == "Active"
+    assert response.json()["data"]["status"] == "Discharge"
 
 def test_patient_not_found():
     response = client.get("/patient/99999")

@@ -3,7 +3,7 @@ from src.data.patient_db import patients
 from  datetime import datetime
 from src.services.audit_service import log_action
 from src.data.storage import save_patients
-from src.database.patient_respository import insert_patient
+from src.database.patient_respository import insert_patient, get_patient
 
 def validate_patient(patient_id):
 
@@ -20,23 +20,23 @@ def validate_patient(patient_id):
             "message": "Patient ID must contain numbers only",
         }
     
-    if patient_id not in patients:
+    database_patient = get_patient(patient_id)
+    
+    if database_patient is None:
         return {
             "valid": False,
             "message": "Patient not found",
         }
     
-    patient = patients[patient_id]
-    
     
     return {
         "valid": True,
         "patient":{
-            "id": patient_id,
-            "name": patient["name"],
-            "status": patient["status"],
-            "created_at": patient.get("created_at"),
-            "updated_at": patient.get("updated_at")
+            "id": database_patient["id"],
+            "name": database_patient["name"],
+            "status": database_patient["status"],
+            "created_at": database_patient["created_at"],
+            "updated_at": database_patient["updated_at"]
         }
     }
     
