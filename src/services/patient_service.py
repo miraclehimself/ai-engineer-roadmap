@@ -3,7 +3,10 @@ from src.data.patient_db import patients
 from  datetime import datetime
 from src.services.audit_service import log_action
 from src.data.storage import save_patients
-from src.database.patient_respository import insert_patient, get_patient
+from src.database.patient_respository import insert_patient, get_patient, search_patients as search_patients_from_db
+
+
+
 
 def validate_patient(patient_id):
 
@@ -42,16 +45,19 @@ def validate_patient(patient_id):
     
 
 def search_patients_by_status(status):
+    database_patients = search_patients_from_db(status)
 
     results = []
-    for patient_id, patient in patients.items():
-        if status is None or patient["status"] == status:
-        
-            results.append({
-                "id": patient_id,
+
+    for patient in database_patients:
+        results.append({
+                "id": patient["id"],
                 "name": patient["name"],
-                "status": patient["status"]
-            })
+                "status": patient["status"],
+                "created_at": patient["created_at"],
+                "updated_at": patient["updated_at"]
+        })
+        
     return results
 
 def delete_patient(patient_id):
@@ -134,3 +140,4 @@ def create_patient_record(patient):
             "updated_at": patients[patient.id].get("updated_at")
         }
     }
+

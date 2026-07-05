@@ -1,7 +1,10 @@
 from src.services.audit_service import audit_logs
 from src.models.response import StandardResponse
 from fastapi import APIRouter, HTTPException
+from src.services import patient_service
 from src.services.patient_service import (
+
+
      validate_patient,
      search_patients_by_status,
      delete_patient,
@@ -52,6 +55,16 @@ def get_patient(patient_id: str):
          message="patient found",
          data=result["patient"]
     )
+
+@router.get("/patients/search")
+def search_patients(status: str = None):
+     results = patient_service.search_patients_by_status(status)
+
+     return {
+          "valid": True,
+          "count": len(results),
+          "patients": results
+     }
 
 @router.post("/patient", response_model=StandardResponse)
 def create_patient(patient: Patient):

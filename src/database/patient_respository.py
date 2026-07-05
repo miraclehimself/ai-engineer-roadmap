@@ -33,9 +33,36 @@ def get_patient(patient_id: str):
         """,
         (patient_id,)
     )
-    
+
     patient = cursor.fetchone()
 
     connection.close()
 
     return patient
+
+def search_patients(status: str = None):
+    connection = get_connection()
+    cursor = connection.cursor()
+
+    if status:
+        cursor.execute(
+            """
+            SELECT id, name, status, created_at, updated_at
+            FROM patients
+            WHERE status = ?
+            """,
+            (status,)
+        )
+    else:
+        cursor.execute(
+            """
+            SELECT id, name, status, created_at, updated_at
+            FROM patients
+            """
+        )
+    
+    patients = cursor.fetchall()
+    
+    connection.close()
+
+    return patients
