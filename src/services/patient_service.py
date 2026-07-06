@@ -3,7 +3,7 @@ from src.data.patient_db import patients
 from  datetime import datetime
 from src.services.audit_service import log_action
 from src.data.storage import save_patients
-from src.database.patient_respository import insert_patient, get_patient, search_patients as search_patients_from_db
+from src.database.patient_respository import insert_patient, get_patient, search_patients as search_patients_from_db, update_patient as update_patient_in_db
 
 
 
@@ -90,6 +90,7 @@ def update_patient(patient_id, updated_data):
         }
     patients[patient_id].update(updated_data)
     patients[patient_id]["updated_at"] = datetime.now().isoformat()
+    update_patient_in_db(patient_id, patients[patient_id])
     save_patients(patients)
 
     log_action("UPDATE", patient_id)
@@ -140,4 +141,3 @@ def create_patient_record(patient):
             "updated_at": patients[patient.id].get("updated_at")
         }
     }
-

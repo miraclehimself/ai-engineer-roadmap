@@ -66,3 +66,24 @@ def search_patients(status: str = None):
     connection.close()
 
     return patients
+
+def update_patient (patient_id: str, updated_data):
+    connection = get_connection()
+    cursor = connection.cursor()
+
+    cursor.execute(
+        """
+        UPDATE patients
+        SET name = ?, status = ?, updated_at = ?
+        WHERE id = ?
+        """,
+        (
+            updated_data["name"],
+            updated_data["status"],
+            updated_data["updated_at"],
+            patient_id
+        )
+    )
+
+    connection.commit()
+    connection.close()
