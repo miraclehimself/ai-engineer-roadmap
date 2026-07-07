@@ -87,3 +87,18 @@ def update_patient (patient_id: str, updated_data):
 
     connection.commit()
     connection.close()
+
+def delete_patient(patient_id: str):
+    connection = get_connection()
+    cursor = connection.cursor()
+
+    cursor.execute(
+      """
+      DELETE FROM patients
+      WHERE id = ?
+      """,
+      (patient_id,)
+    )
+
+    connection.commit()
+    connection.close()
