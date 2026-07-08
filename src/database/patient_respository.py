@@ -102,3 +102,26 @@ def delete_patient(patient_id: str):
 
     connection.commit()
     connection.close()
+
+
+def get_patients(page: int = 1, size: int = 10):
+    connection = get_connection()
+    cursor = connection.cursor()
+
+    offset = (page - 1) * size
+
+    cursor.execute(
+        """
+        SELECT *
+        FROM patients
+        LIMIT ?
+        OFFSET ?
+        """,
+        (size, offset)
+    )
+    
+    patients = cursor.fetchall()
+
+    connection.close()
+
+    return patients

@@ -3,7 +3,8 @@ from src.data.patient_db import patients
 from  datetime import datetime
 from src.services.audit_service import log_action
 from src.data.storage import save_patients
-from src.database.patient_respository import insert_patient, get_patient, search_patients as search_patients_from_db, update_patient as update_patient_in_db, delete_patient as delete_patient_from_db
+from src.database.patient_respository import insert_patient, get_patient, search_patients as search_patients_from_db, update_patient as update_patient_in_db, delete_patient as delete_patient_from_db, get_patients as get_patients_from_db
+
 
 
 
@@ -142,3 +143,18 @@ def create_patient_record(patient):
             "updated_at": patients[patient.id].get("updated_at")
         }
     }
+
+
+def get_patients(page=1, size=10):
+    database_patients = get_patients_from_db(page, size)
+    results = []
+    for patient in database_patients:
+        results.append({
+            "id": patient["id"],
+            "name": patient["name"],
+            "status": patient["status"],
+            "created_at": patient["created_at"],
+            "updated_at": patient["updated_at"]
+        })
+
+    return results
