@@ -125,3 +125,15 @@ def get_patients(page: int = 1, size: int = 10):
     connection.close()
 
     return patients
+
+def count_patients():
+    connection = get_connection()
+    cursor = connection.cursor()
+
+    cursor.execute("SELECT COUNT(*) AS total FROM patients")
+
+    result = cursor.fetchone()
+
+    connection.close()
+
+    return result["total"]

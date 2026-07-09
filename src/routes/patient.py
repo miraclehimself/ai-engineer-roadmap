@@ -133,12 +133,13 @@ def get_audit_logs(patient_id: str | None = None):
 @router.get("/patients")
 def get_all_patients(page: int = 1, size: int = 10):
 
-     result = patient_service.get_patients(page, size)
+     results = patient_service.get_patients(page, size)
 
      return {
           "valid": True,
           "page": page,
           "size": size,
-          "count": len(result),
-          "patients": result
+          "count": len(results["patients"]),
+          "total": results["total"],
+          "patients": results["patients"]
      }

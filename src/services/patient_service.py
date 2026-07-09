@@ -3,7 +3,7 @@ from src.data.patient_db import patients
 from  datetime import datetime
 from src.services.audit_service import log_action
 from src.data.storage import save_patients
-from src.database.patient_respository import insert_patient, get_patient, search_patients as search_patients_from_db, update_patient as update_patient_in_db, delete_patient as delete_patient_from_db, get_patients as get_patients_from_db
+from src.database.patient_respository import count_patients, insert_patient, get_patient, search_patients as search_patients_from_db, update_patient as update_patient_in_db, delete_patient as delete_patient_from_db, get_patients as get_patients_from_db
 
 
 
@@ -146,7 +146,10 @@ def create_patient_record(patient):
 
 
 def get_patients(page=1, size=10):
+
     database_patients = get_patients_from_db(page, size)
+    total = count_patients()
+
     results = []
     for patient in database_patients:
         results.append({
@@ -157,4 +160,7 @@ def get_patients(page=1, size=10):
             "updated_at": patient["updated_at"]
         })
 
-    return results
+    return {
+        "total": total,
+        "patients": results
+    }
