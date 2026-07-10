@@ -104,16 +104,27 @@ def delete_patient(patient_id: str):
     connection.close()
 
 
-def get_patients(page: int = 1, size: int = 10):
+def get_patients(page: int = 1, size: int = 10, sort: str = "created_at"):
     connection = get_connection()
     cursor = connection.cursor()
-
     offset = (page - 1) * size
 
+    allowed_sort_fields = [
+        "id",
+        "name",
+        "status",
+        "created_at",
+        "updated_at"
+    ]
+
+    if sort not in allowed_sort_fields:
+        sort = "created_at"
+
     cursor.execute(
-        """
+        f"""
         SELECT *
         FROM patients
+        ORDER BY {sort}
         LIMIT ?
         OFFSET ?
         """,
