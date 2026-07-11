@@ -20,7 +20,7 @@ def login_user(credentials: LoginRequest):
     if result is None:
         raise HTTPException(
             status_code=401,
-            details="Invalid username or password"
+            detail="Invalid username or password"
         )
     
     return result
