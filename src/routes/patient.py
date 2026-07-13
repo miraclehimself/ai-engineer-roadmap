@@ -1,3 +1,5 @@
+from fastapi import Depends
+from src.auth.dependencies import get_current_user
 from src.services.audit_service import audit_logs
 from src.models.response import StandardResponse
 from fastapi import APIRouter, HTTPException
@@ -131,15 +133,19 @@ def get_audit_logs(patient_id: str | None = None):
      }
 
 @router.get("/patients")
-def get_all_patients(page: int = 1, size: int = 10):
+def get_all_patients(
+    page: int = 1,
+    size: int = 10,
+    sort: str = "created_at",
+    current_user: dict = Depends(get_current_user),
+):
+    results = patient_service.get_patients(page, size)
 
-     results = patient_service.get_patients(page, size)
-
-     return {
-          "valid": True,
-          "page": page,
-          "size": size,
-          "count": len(results["patients"]),
-          "total": results["total"],
-          "patients": results["patients"]
-     }
+    return {
+        "valid": True,
+        "page": page,
+        "size": size,
+        "count": len(results["patients"]),
+        "total": results["total"],
+        "patients": results["patients"],
+    }
