@@ -4,8 +4,9 @@ from src.services.audit_service import audit_logs
 from src.models.response import StandardResponse
 from fastapi import APIRouter, HTTPException
 from src.services import patient_service
+from src.auth.roles import require_role
+from src.auth.dependencies import get_current_user
 from src.services.patient_service import (
-
 
      validate_patient,
      search_patients_by_status,
@@ -79,21 +80,28 @@ def create_patient(patient: Patient):
          data=result["patient"]
     )
 
-@router.delete("/patient/{patient_id}", response_model=StandardResponse)
-def remove_patient(patient_id: str):
-     
-     result = delete_patient(patient_id)
 
-     if result["valid"] is False:
-          raise HTTPException(
-               status_code=404,
-               detail=result["message"]
-          )
-     return StandardResponse(
-          valid=result["valid"],
-          message=result["message"],
-          data=result["patient"]
-     )
+     
+@router.delete("/patient/{patient_id}", response_model=StandardResponse)
+def remove_patient(
+    patient_id: str,
+    current_user: dict = Depends(get_current_user)
+):
+    require_role(current_user, "admin")
+
+    result = delete_patient(patient_id)
+
+    if result["valid"] is False:
+        raise HTTPException(
+            status_code=404,
+            detail=result["message"]
+        )
+
+    return StandardResponse(
+        valid=result["valid"],
+        message=result["message"],
+        data=result["patient"]
+    )
      
 @router.put("/patient/{patient_id}", response_model=StandardResponse)
 def edit_patient(patient_id: str, patient: Patient):
