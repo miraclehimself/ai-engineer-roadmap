@@ -1,7 +1,9 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
-
 from src.auth.auth_service import login
+from fastapi import Depends
+from src.auth.dependencies import get_current_user
+
 
 router = APIRouter()
 
@@ -24,3 +26,11 @@ def login_user(credentials: LoginRequest):
         )
     
     return result
+
+@router.get("/me")
+def me(current_user: dict = Depends(get_current_user)):
+    
+    return {
+        "username": current_user["sub"],
+        "role": current_user["role"]
+    }
