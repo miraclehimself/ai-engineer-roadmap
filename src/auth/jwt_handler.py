@@ -1,9 +1,11 @@
 from datetime import datetime, timedelta, timezone
 from jose import JWTError, jwt
 
-SECRET_KEY = "temporary-development-secret"
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
+from src.config import (
+    SECRET_KEY,
+    ALGORITHM,
+    ACCESS_TOKEN_EXPIRE_MINUTES
+)
 
 
 def create_access_token(data: dict) -> str:
