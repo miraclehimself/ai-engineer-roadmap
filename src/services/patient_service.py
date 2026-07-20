@@ -4,7 +4,7 @@ from  datetime import datetime
 from src.services.audit_service import log_action
 from src.data.storage import save_patients
 from src.database.patient_respository import count_patients, insert_patient, get_patient, search_patients as search_patients_from_db, update_patient as update_patient_in_db, delete_patient as delete_patient_from_db, get_patients as get_patients_from_db
-
+from src.exceptions.patient_exceptions import PatientNotFoundException
 
 
 
@@ -64,11 +64,7 @@ def search_patients_by_status(status):
 def delete_patient(patient_id):
 
     if patient_id not in patients:
-        return {
-            "valid": False,
-            "message": "Patient not found"
-
-        }
+        raise PatientNotFoundException(patient_id)
     
     deleted = patients.pop(patient_id)
     delete_patient_from_db(patient_id)
