@@ -1,10 +1,11 @@
 from fastapi import Depends
-from src.auth.dependencies import get_current_user
 from src.services.audit_service import audit_logs
 from src.models.response import StandardResponse
 from fastapi import APIRouter, HTTPException
 from src.services import patient_service
-from src.auth.roles import require_role
+from fastapi import APIRouter, Depends, HTTPException
+
+from src.auth.dependencies import admin_required, get_current_user
 from src.auth.dependencies import get_current_user
 from src.services.patient_service import (
 
@@ -85,17 +86,10 @@ def create_patient(patient: Patient):
 @router.delete("/patient/{patient_id}", response_model=StandardResponse)
 def remove_patient(
     patient_id: str,
-    current_user: dict = Depends(get_current_user)
+    current_user: dict = Depends(admin_required),
 ):
-    require_role(current_user, "admin")
 
     result = delete_patient(patient_id)
-
-    if result["valid"] is False:
-        raise HTTPException(
-            status_code=404,
-            detail=result["message"]
-        )
 
     return StandardResponse(
         valid=result["valid"],
