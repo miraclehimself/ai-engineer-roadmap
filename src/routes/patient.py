@@ -75,6 +75,12 @@ def create_patient(patient: Patient):
 
     result = create_patient_record(patient)
 
+    if result["valid"] is False:
+         raise HTTPException(
+              status_code=409,
+              detail=result["message"]
+         )
+
     return StandardResponse(
          valid=result["valid"],
          message=result["message"],
