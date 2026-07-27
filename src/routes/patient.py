@@ -1,19 +1,16 @@
-from fastapi import Depends
-from src.services.audit_service import audit_logs
-from src.models.response import StandardResponse
-from fastapi import APIRouter, HTTPException
-from src.services import patient_service
 from fastapi import APIRouter, Depends, HTTPException
 
 from src.auth.dependencies import admin_required, get_current_user
-from src.auth.dependencies import get_current_user
+from src.models.patient import Patient
+from src.models.response import StandardResponse
+from src.services import patient_service
+from src.services.audit_service import audit_logs
 from src.services.patient_service import (
-
-     validate_patient,
-     search_patients_by_status,
-     delete_patient,
-     update_patient,
-     create_patient_record
+    create_patient_record,
+    delete_patient,
+    search_patients_by_status,
+    update_patient,
+    validate_patient,
 )
 
 from src.models.patient import Patient
@@ -60,15 +57,6 @@ def get_patient(patient_id: str):
          data=result["patient"]
     )
 
-@router.get("/patients/search")
-def search_patients(status: str = None):
-     results = patient_service.search_patients_by_status(status)
-
-     return {
-          "valid": True,
-          "count": len(results),
-          "patients": results
-     }
 
 @router.post("/patient", response_model=StandardResponse)
 def create_patient(patient: Patient):
@@ -144,7 +132,6 @@ def get_audit_logs(patient_id: str | None = None):
 def get_all_patients(
     page: int = 1,
     size: int = 10,
-    sort: str = "created_at",
     current_user: dict = Depends(get_current_user),
 ):
     results = patient_service.get_patients(page, size)
