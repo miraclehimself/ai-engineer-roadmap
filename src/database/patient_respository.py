@@ -1,4 +1,6 @@
 from src.database.connection import get_connection
+from src.database.models.patient import PatientModel
+from src.database.session import SessionLocal
 
 def insert_patient(patient_data):
     connection = get_connection()
@@ -22,25 +24,32 @@ def insert_patient(patient_data):
     connection.close()
 
 def get_patient(patient_id: str):
-    connection = get_connection()
-    cursor = connection.cursor()
+    session = SessionLocal()
 
-    cursor.execute(
-        """
-        SELECT id, name, status, created_at, updated_at
-        FROM patients
-        WHERE id = ?
-        """,
-        (patient_id,)
-    )
+    try:
+        patient = (
+            session.query(PatientModel)
+            .filter(PatientModel.id == patient_id)
+            .first()
+        )
 
-    patient = cursor.fetchone()
+        if patient is None:
+            return None
 
-    connection.close()
+        return {
+            "id": patient.id,
+            "name": patient.name,
+            "status": patient.status,
+            "created_at": patient.created_at,
+            "updated_at": patient.updated_at,
+        }
 
-    return patient
+    finally:
+        session.close()
 
-def search_patients(status: str = None):
+
+   
+def search_patients(status: str | None = None):
     connection = get_connection()
     cursor = connection.cursor()
 
@@ -60,12 +69,12 @@ def search_patients(status: str = None):
             FROM patients
             """
         )
-    
+
     patients = cursor.fetchall()
-    
+
     connection.close()
 
-    return patients
+    return [dict(patient) for patient in patients]
 
 def update_patient (patient_id: str, updated_data):
     connection = get_connection()
@@ -104,9 +113,14 @@ def delete_patient(patient_id: str):
     connection.close()
 
 
-def get_patients(page: int = 1, size: int = 10, sort: str = "created_at"):
+def get_patients(
+    page: int = 1,
+    size: int = 10,
+    sort: str = "created_at",
+):
     connection = get_connection()
     cursor = connection.cursor()
+
     offset = (page - 1) * size
 
     allowed_sort_fields = [
@@ -114,7 +128,7 @@ def get_patients(page: int = 1, size: int = 10, sort: str = "created_at"):
         "name",
         "status",
         "created_at",
-        "updated_at"
+        "updated_at",
     ]
 
     if sort not in allowed_sort_fields:
@@ -122,7 +136,7 @@ def get_patients(page: int = 1, size: int = 10, sort: str = "created_at"):
 
     cursor.execute(
         f"""
-        SELECT *
+        SELECT id, name, status, created_at, updated_at
         FROM patients
         ORDER BY {sort}
         LIMIT ?
@@ -130,12 +144,12 @@ def get_patients(page: int = 1, size: int = 10, sort: str = "created_at"):
         """,
         (size, offset)
     )
-    
+
     patients = cursor.fetchall()
 
     connection.close()
 
-    return patients
+    return [dict(patient) for patient in patients]
 
 def count_patients():
     connection = get_connection()
