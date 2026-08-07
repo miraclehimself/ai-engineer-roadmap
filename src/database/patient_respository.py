@@ -50,31 +50,29 @@ def get_patient(patient_id: str):
 
    
 def search_patients(status: str | None = None):
-    connection = get_connection()
-    cursor = connection.cursor()
+    session = SessionLocal()
 
-    if status:
-        cursor.execute(
-            """
-            SELECT id, name, status, created_at, updated_at
-            FROM patients
-            WHERE status = ?
-            """,
-            (status,)
-        )
-    else:
-        cursor.execute(
-            """
-            SELECT id, name, status, created_at, updated_at
-            FROM patients
-            """
-        )
+    try:
+        query = session.query(PatientModel)
 
-    patients = cursor.fetchall()
+        if status:
+            query = query.filter(PatientModel.status == status)
 
-    connection.close()
+        patients = query.all()
 
-    return [dict(patient) for patient in patients]
+        return [
+            {
+                "id": patient.id,
+                "name": patient.name,
+                "status": patient.status,
+                "created_at": patient.created_at,
+                "updated_at": patient.updated_at,
+            }
+            for patient in patients
+        ]
+
+    finally:
+        session.close()
 
 def update_patient (patient_id: str, updated_data):
     connection = get_connection()
