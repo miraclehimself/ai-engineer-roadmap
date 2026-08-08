@@ -116,38 +116,50 @@ def get_patients(
     size: int = 10,
     sort: str = "created_at",
 ):
-    connection = get_connection()
-    cursor = connection.cursor()
+    session = SessionLocal()
 
-    offset = (page - 1) * size
+    try:
+        allowed_sort_fields = {
+            "id": PatientModel.id,
+            "name": PatientModel.name,
+            "status": PatientModel.status,
+            "created_at": PatientModel.created_at,
+            "updated_at": PatientModel.updated_at,
+        }
 
-    allowed_sort_fields = [
-        "id",
-        "name",
-        "status",
-        "created_at",
-        "updated_at",
-    ]
+        sort_column = allowed_sort_fields.get(
+            sort,
+            PatientModel.created_at,
+        )
 
-    if sort not in allowed_sort_fields:
-        sort = "created_at"
+        sort_column = allowed_sort_fields.get(
+            sort,
+            PatientModel.created_at,
+        )
+        offset = (page - 1) * size
 
-    cursor.execute(
-        f"""
-        SELECT id, name, status, created_at, updated_at
-        FROM patients
-        ORDER BY {sort}
-        LIMIT ?
-        OFFSET ?
-        """,
-        (size, offset)
-    )
+        patients = (
+            session.query(PatientModel)
+            .order_by(sort_column)
+            .offset(offset)
+            .limit(size)
+            .all()
+        )
 
-    patients = cursor.fetchall()
+        return [
+            {
+                "id": patient.id,
+                "name": patient.name,
+                "status": patient.status,
+                "created_at": patient.created_at,
+                "updated_at": patient.updated_at,
+            }
+            for patient in patients
+        ]
 
-    connection.close()
+    finally:
+        session.close()
 
-    return [dict(patient) for patient in patients]
 
 def count_patients():
     connection = get_connection()
