@@ -1,27 +1,35 @@
+from datetime import datetime
 from src.database.connection import get_connection
 from src.database.models.patient import PatientModel
 from src.database.session import SessionLocal
 
 def insert_patient(patient_data):
-    connection = get_connection()
-    cursor = connection.cursor()
+    session = SessionLocal()
 
-    cursor.execute(
-        """
-        INSERT INTO patients (id, name, status, created_at, updated_at)
-        VALUES (?, ?, ?, ?, ?)
-        """,
-        (
-            patient_data["id"],
-            patient_data["name"],
-            patient_data["status"],
-            patient_data["created_at"],
-            patient_data["updated_at"],
-        )
-    )
+    try:
+        patient = PatientModel(
+            id=patient_data["id"],
+            name=patient_data["name"],
+            status=patient_data["status"],
+            created_at=datetime.fromisoformat(
+                patient_data["created_at"]
+            ),
+            updated_at=datetime.fromisoformat(
+                patient_data["updated_at"]
+            ),
+        )   
 
-    connection.commit()
-    connection.close()
+        session.add(patient)
+        session.commit()
+
+        return patient
+
+    except Exception:
+        session.rollback()
+        raise
+
+    finally:
+        session.close()
 
 def get_patient(patient_id: str):
     session = SessionLocal()
