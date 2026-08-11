@@ -83,25 +83,46 @@ def search_patients(status: str | None = None):
         session.close()
 
 def update_patient (patient_id: str, updated_data):
-    connection = get_connection()
-    cursor = connection.cursor()
+    session = SessionLocal()
 
-    cursor.execute(
-        """
-        UPDATE patients
-        SET name = ?, status = ?, updated_at = ?
-        WHERE id = ?
-        """,
-        (
-            updated_data["name"],
-            updated_data["status"],
-            updated_data["updated_at"],
-            patient_id
+    try:
+        patient = (
+            session.query(PatientModel)
+            .filter(PatientModel.id == patient_id)
+            .first()
         )
-    )
 
-    connection.commit()
-    connection.close()
+        if patient is None:
+            return None
+
+        patient.name = updated_data["name"]
+        patient.status = updated_data["status"]
+
+        updated_at = updated_data["updated_at"]
+
+        if isinstance(updated_at, str):
+            updated_at = datetime.fromisoformat(updated_at)
+
+        patient.updated_at = updated_at
+
+        session.commit()
+        session.refresh(patient)
+
+        return {
+            "id": patient.id,
+            "name": patient.name,
+            "status": patient.status,
+            "created_at": patient.created_at,
+            "updated_at": patient.updated_at,
+        }
+
+    except Exception:
+        session.rollback()
+        raise
+    finally:
+        session.close()
+
+
 
 def delete_patient(patient_id: str):
     connection = get_connection()
