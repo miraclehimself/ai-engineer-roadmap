@@ -78,16 +78,19 @@ def delete_patient(patient_id):
 
 def update_patient(patient_id, updated_data):
 
-    if patient_id not in patients:
+    updated_data["updated_at"] = datetime.now().isoformat()
+
+    updated = update_patient_in_db(
+        patient_id,
+        updated_data
+    )
+
+    if updated is None:
         return {
             "valid": False,
             "message": "Patient not found"
 
         }
-    patients[patient_id].update(updated_data)
-    patients[patient_id]["updated_at"] = datetime.now().isoformat()
-    update_patient_in_db(patient_id, patients[patient_id])
-    save_patients(patients)
 
     log_action("UPDATE", patient_id)
 
