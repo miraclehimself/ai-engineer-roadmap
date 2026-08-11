@@ -63,12 +63,10 @@ def search_patients_by_status(status):
 
 def delete_patient(patient_id):
 
-    if patient_id not in patients:
+    deleted = delete_patient_from_db(patient_id)
+
+    if deleted is None:
         raise PatientNotFoundException(patient_id)
-    
-    deleted = patients.pop(patient_id)
-    delete_patient_from_db(patient_id)
-    save_patients(patients)
 
     log_action("DELETE", patient_id)
 

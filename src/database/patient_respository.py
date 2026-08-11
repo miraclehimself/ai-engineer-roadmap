@@ -125,19 +125,37 @@ def update_patient (patient_id: str, updated_data):
 
 
 def delete_patient(patient_id: str):
-    connection = get_connection()
-    cursor = connection.cursor()
+    session = SessionLocal()
 
-    cursor.execute(
-      """
-      DELETE FROM patients
-      WHERE id = ?
-      """,
-      (patient_id,)
-    )
+    try:
+        patient = (
+            session.query(PatientModel)
+            .filter(PatientModel.id == patient_id)
+            .first()
+        )
 
-    connection.commit()
-    connection.close()
+        if patient is None:
+            return None
+
+        deleted_patient = {
+            "id": patient.id,
+            "name": patient.name,
+            "status": patient.status,
+            "created_at": patient.created_at,
+            "updated_at": patient.updated_at,
+        }
+
+        session.delete(patient)
+        session.commit()
+
+        return deleted_patient
+    
+    except Exception:
+        session.rollback()
+        raise
+
+    finally:
+        session.close()
 
 
 def get_patients(
