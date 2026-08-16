@@ -97,29 +97,24 @@ def update_patient(patient_id, updated_data):
     return {
         "valid": True,
         "message": "Patient updated",
-        "patient": patients[patient_id]
+        "patient": updated
 
     }
 
     
 
 def create_patient_record(patient):
-    if patient.id in patients:
+    existing_patient = get_patient(patient.id)
+
+    if existing_patient is not None:
         return {
             "valid": False,
             "message": "Patient already exists"
 
     }
     now = datetime.now().isoformat()
-    patients[patient.id] = {
-        "name": patient.name,
-        "status": patient.status,
-        "created_at": now,
-        "updated_at": now
 
-    }
-    save_patients(patients)
-    insert_patient({
+    created_patient = insert_patient({
         "id": patient.id,
         "name": patient.name,
         "status": patient.status,
@@ -133,14 +128,13 @@ def create_patient_record(patient):
         "valid": True,
         "message": "Patient created successfully",
         "patient": {
-            "id": patient.id,
-            "name": patient.name,
-            "status": patient.status, 
-            "created_at": patients[patient.id].get("created_at"),
-            "updated_at": patients[patient.id].get("updated_at")
+            "id": created_patient["id"],
+            "name": created_patient["name"],
+            "status": created_patient["status"],
+            "created_at": created_patient["created_at"],
+            "updated_at": created_patient["updated_at"]
         }
     }
-
 
 def get_patients(page=1, size=10):
 

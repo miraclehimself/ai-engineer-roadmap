@@ -14,3 +14,11 @@ SessionLocal = sessionmaker(
     autocommit=False,
     bind=engine,
 )
+
+def get_session():
+    session = SessionLocal()
+
+    try:
+        yield session
+    finally:
+        session.close()

@@ -17,12 +17,21 @@ def insert_patient(patient_data):
             updated_at=datetime.fromisoformat(
                 patient_data["updated_at"]
             ),
-        )   
+        )
 
         session.add(patient)
         session.commit()
+        session.refresh(patient)
 
-        return patient
+        created_patient = {
+            "id": patient.id,
+            "name": patient.name,
+            "status": patient.status,
+            "created_at": patient.created_at,
+            "updated_at": patient.updated_at,
+        }
+
+        return created_patient
 
     except Exception:
         session.rollback()
